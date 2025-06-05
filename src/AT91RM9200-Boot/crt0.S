@@ -34,6 +34,6 @@ copydata:
 
 clearbss:
 	subs r5, r5, #4
-	str r0, [r3], #4
+	str r0, [r4], #4 @ 修正为 r4
 	bne clearbss
 	mov pc, lr
