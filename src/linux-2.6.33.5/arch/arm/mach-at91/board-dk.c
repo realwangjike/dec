@@ -28,6 +28,9 @@
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
 #include <linux/mtd/physmap.h>
+#include <linux/can/platform/sja1000.h>
+#include <linux/interrupt.h>
+#include <linux/clk.h>
 
 #include <asm/setup.h>
 #include <asm/mach-types.h>
@@ -41,6 +44,7 @@
 #include <mach/board.h>
 #include <mach/gpio.h>
 #include <mach/at91rm9200_mc.h>
+#include <mach/at91_pio.h>
 
 #include "generic.h"
 
@@ -188,6 +192,153 @@ static struct gpio_led dk_leds[] = {
 	}
 };
 
+#define DK_CAN_ADDRESS_SPACE_SIZE	128
+
+static struct sja1000_platform_data dk_can_data = {
+	.clock		= 8000000,
+	.ocr		= 0xfa,
+	.cdr		= 0x88,
+};
+
+static struct resource dk_can0_resource[] = {
+	[0] = {
+		.start		= AT91_CHIPSELECT_3,
+		.end		= AT91_CHIPSELECT_3 + DK_CAN_ADDRESS_SPACE_SIZE - 1,
+		.flags		= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= AT91RM9200_ID_IRQ2,
+		.end	= AT91RM9200_ID_IRQ2,
+		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_HIGH,
+	},
+};
+
+static struct resource dk_can1_resource[] = {
+	[0] = {
+		.start		= AT91_CHIPSELECT_4,
+		.end		= AT91_CHIPSELECT_4 + DK_CAN_ADDRESS_SPACE_SIZE - 1,
+		.flags		= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= AT91RM9200_ID_IRQ3,
+		.end	= AT91RM9200_ID_IRQ3,
+		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_HIGH,
+	},
+};
+
+static struct resource dk_can2_resource[] = {
+	[0] = {
+		.start		= AT91_CHIPSELECT_6,
+		.end		= AT91_CHIPSELECT_6 + DK_CAN_ADDRESS_SPACE_SIZE - 1,
+		.flags		= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= AT91RM9200_ID_IRQ4,
+		.end	= AT91RM9200_ID_IRQ4,
+		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_HIGH,
+	},
+};
+
+static struct resource dk_can3_resource[] = {
+	[0] = {
+		.start		= AT91_CHIPSELECT_7,
+		.end		= AT91_CHIPSELECT_7 + DK_CAN_ADDRESS_SPACE_SIZE - 1,
+		.flags		= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= AT91RM9200_ID_IRQ5,
+		.end	= AT91RM9200_ID_IRQ5,
+		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_HIGH,
+	},
+};
+
+static struct platform_device dk_can0 = {
+	.name		= "sja1000_platform",
+	.id		= 0,
+	.dev		= {
+				.platform_data	= &dk_can_data,
+			},
+	.resource	= dk_can0_resource,
+	.num_resources	= ARRAY_SIZE(dk_can0_resource),
+};
+
+static struct platform_device dk_can1 = {
+	.name		= "sja1000_platform",
+	.id		= 1,
+	.dev		= {
+				.platform_data	= &dk_can_data,
+			},
+	.resource	= dk_can1_resource,
+	.num_resources	= ARRAY_SIZE(dk_can1_resource),
+};
+
+static struct platform_device dk_can2 = {
+	.name		= "sja1000_platform",
+	.id		= 2,
+	.dev		= {
+				.platform_data	= &dk_can_data,
+			},
+	.resource	= dk_can2_resource,
+	.num_resources	= ARRAY_SIZE(dk_can2_resource),
+};
+
+static struct platform_device dk_can3 = {
+	.name		= "sja1000_platform",
+	.id		= 3,
+	.dev		= {
+				.platform_data	= &dk_can_data,
+			},
+	.resource	= dk_can3_resource,
+	.num_resources	= ARRAY_SIZE(dk_can3_resource),
+};
+
+void __init at91_add_device_cans(struct sja1000_platform_data *data)
+{
+	unsigned int csa;
+
+	if (!data)
+		return;
+
+	/* enable the address range of CS3/CS4*/
+	// SJA1000_1和SJA1000_2对应与CS3和CS4
+	// SJA1000_3和SJA1000_4对应的CS是不可编程的，默认的，无需设置
+	csa = at91_sys_read(AT91_EBI_CSA);
+	csa &= ~AT91_EBI_CS3A;
+	csa |= AT91_EBI_CS3A_SMC;
+	csa &= ~AT91_EBI_CS4A;
+	csa |= AT91_EBI_CS4A_SMC;
+	at91_sys_write(AT91_EBI_CSA, csa);
+
+	/* set the bus interface characteristics */
+	// SJA1000_1
+	//at91_sys_write(AT91_SMC_CSR(3), (0x2 | (0x1 << 7) | (0x2 << 8) | (0x2 << 13) | (0x0 << 15)));
+	at91_sys_write(AT91_SMC_CSR(3), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
+		| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
+
+	// SJA1000_2
+    at91_sys_write(AT91_SMC_CSR(4), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
+		| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
+	
+	// SJA1000_3
+    at91_sys_write(AT91_SMC_CSR(6), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
+		| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
+
+	// SJA1000_4
+	at91_sys_write(AT91_SMC_CSR(7), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
+		| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
+
+	//中断线
+	at91_set_B_periph(AT91_PIN_PA2, 0);
+	at91_set_B_periph(AT91_PIN_PA3, 0);
+	at91_set_B_periph(AT91_PIN_PA23, 0);
+	at91_set_B_periph(AT91_PIN_PA25, 0);
+
+	platform_device_register(&dk_can0);
+	platform_device_register(&dk_can1);
+	platform_device_register(&dk_can2);
+	platform_device_register(&dk_can3);
+}
+
 static void __init dk_board_init(void)
 {
 	/* Serial */
@@ -219,6 +370,8 @@ static void __init dk_board_init(void)
 	platform_device_register(&dk_flash);
 	/* LEDs */
 	at91_gpio_leds(dk_leds, ARRAY_SIZE(dk_leds));
+	/* SJA1000 can */
+	at91_add_device_cans(&dk_can_data);
 	/* VGA */
 //	dk_add_device_video();
 }
