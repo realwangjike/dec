@@ -3,7 +3,7 @@ TOPDIR	:= $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
 CFLAGS = -Os -fno-builtin -fomit-frame-pointer -fno-strict-aliasing -fno-inline -fno-common -mshort-load-bytes -msoft-float -D__arm__ -D__FLASHED__ -I$(TOPDIR)/include
 LDFLAGS = -nostdlib -Tld.script
 
-CROSS_COMPILE=arm-linux-
+CROSS_COMPILE=/usr/local/arm/2.95.3/bin/arm-linux-
 CC=$(CROSS_COMPILE)gcc
 
 OBJ =  entry.o div0.o _udivsi3.o _umodsi3.o init.o crt0.o main.o asm_isr.o jump.o \
