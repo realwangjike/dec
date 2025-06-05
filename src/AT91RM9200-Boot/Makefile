@@ -2,8 +2,8 @@
 CFLAGS = -Os -fno-builtin -fomit-frame-pointer  -fno-strict-aliasing  -fno-common -mshort-load-bytes -msoft-float -D__arm__ -D__FLASHED__ -I.
 LDFLAGS = -nostdlib -Tld.script
 
-CROSS_COMPILE=arm-linux-
-#CROSS_COMPILE = /usr/local/arm/2.95.3/bin/arm-linux-
+#CROSS_COMPILE=arm-linux-
+CROSS_COMPILE = /usr/local/arm/2.95.3/bin/arm-linux-
 CC=$(CROSS_COMPILE)gcc
 
 OBJ =  entry.o div0.o _udivsi3.o initboot.o crt0.o misc.o main.o
