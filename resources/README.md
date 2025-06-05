@@ -1,7 +1,15 @@
 ### 资源下载地址
 
++ u-boot源码
+  + 下载列表
+    + https://ftp.denx.de/pub/u-boot/
+  + 1.3.4
+    + https://ftp.denx.de/pub/u-boot/u-boot-1.3.4.tar.bz2
+
 + Linux内核源码
   + 下载列表
       + https://cdn.kernel.org/pub/linux/kernel/
   + 2.6.33.5
       + https://cdn.kernel.org/pub/linux/kernel/v2.6/linux-2.6.33.5.tar.xz
+
+
