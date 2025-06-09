@@ -18,4 +18,11 @@
   + 3.0.2
     + https://public.pengutronix.de/software/socket-can/canutils/v3.0/canutils-3.0.2.tar.bz2
 
++ iproutes2
+  + œ¬‘ÿ¡–±Ì
+    + https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/refs/tags
+  + 2.6.33
+    + https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/snapshot/iproute2-2.6.33.tar.gz
+
+
 
