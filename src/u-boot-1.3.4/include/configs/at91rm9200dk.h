@@ -42,6 +42,8 @@
 #define CONFIG_SETUP_MEMORY_TAGS 1
 #define CONFIG_INITRD_TAG	1
 
+#define CONFIG_SKIP_LOWLEVEL_INIT        /* U-Boot is loaded by a bootloader */
+
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 #define CFG_USE_MAIN_OSCILLATOR		1
 /* flash */
@@ -188,11 +190,11 @@
 #else
 #define CFG_ENV_IS_IN_FLASH		1
 #ifdef CONFIG_SKIP_LOWLEVEL_INIT
-#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0xe000)  /* between boot.bin and u-boot.bin.gz */
-#define CFG_ENV_SIZE			0x2000  /* 0x8000 */
+#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0x20000)  /* between boot.bin and u-boot.bin.gz */
+#define CFG_ENV_SIZE			0x20000  /* 0x20000 */
 #else
-#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0x60000)  /* after u-boot.bin */
-#define CFG_ENV_SIZE			0x10000 /* sectors are 64K here */
+#define CFG_ENV_ADDR			(PHYS_FLASH_1 + 0x20000)  /* after u-boot.bin */
+#define CFG_ENV_SIZE			0x20000 /* sectors are 128 here */
 #endif	/* CONFIG_SKIP_LOWLEVEL_INIT */
 #endif	/* CFG_ENV_IS_IN_DATAFLASH */
 

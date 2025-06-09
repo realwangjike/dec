@@ -51,6 +51,10 @@ int board_init (void)
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
+	/* init JS28F128J3 NOR Flash */
+	volatile u16 *addr = (u16 *)CFG_FLASH_BASE;
+    *addr = 0xFF;           /* Read mode */
+
 	return 0;
 }
 
