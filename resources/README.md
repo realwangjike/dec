@@ -25,4 +25,11 @@
     + https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/snapshot/iproute2-2.6.33.tar.gz
 
 
++ busybox
+  + œ¬‘ÿ¡–±Ì
+    + https://busybox.net/downloads/
+  + 1.13.2
+    + https://busybox.net/downloads/busybox-1.13.2.tar.bz2
+
+
 
