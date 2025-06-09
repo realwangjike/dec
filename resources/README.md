@@ -12,4 +12,10 @@
   + 2.6.33.5
       + https://cdn.kernel.org/pub/linux/kernel/v2.6/linux-2.6.33.5.tar.xz
 
++ canutils
+  + ÏÂÔØÁĞ±í
+    + https://public.pengutronix.de/software/socket-can/canutils/
+  + 3.0.2
+    + https://public.pengutronix.de/software/socket-can/canutils/v3.0/canutils-3.0.2.tar.bz2
+
 
