@@ -1,0 +1,19 @@
+#!/bin/sh
+runlevel=S
+export runlevel
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+
+# host name
+/bin/hostname dckj-dec
+
+/bin/echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+
+/bin/mount -av
+
+
+# local service
+/etc/init.d/rc.local
+

@@ -1,0 +1,9 @@
+::sysinit:/etc/init.d/rcS
+# login needed
+ttyS0::respawn:-/bin/sh
+
+::restart:/sbin/init
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount -a -r
+::shutdown:/sbin/swapoff -a
+

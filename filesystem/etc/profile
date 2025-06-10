@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# set search library path
+export LD_LIBRARY_PATH=/lib/:/usr/lib/
+
+# host name
+HOSTNAME="$(/bin/hostname)"
+export HOSTNAME
+
+# set user path in /etc/profile
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export PATH
+
+
+# prompt
+USER="$(id -un)"
+LOGNAME=${USER}
+#PS1='[\u@\h \W]\$'
+PS1=">"
+
+echo "welcome."
