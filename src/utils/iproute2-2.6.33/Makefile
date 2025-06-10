@@ -37,7 +37,7 @@ YACCFLAGS = -d -t -v
 
 LDLIBS += -L../lib -lnetlink -lutil
 
-SUBDIRS=lib ip tc misc netem genl
+SUBDIRS=lib ip tc misc genl
 
 LIBNETLINK=../lib/libnetlink.a ../lib/libutil.a
 
