@@ -9,3 +9,4 @@ sudo cp -rf output/fs/* ramdisk/
 sudo mknod -m 622 ramdisk/dev/console c 5 1
 sudo mknod -m 622 ramdisk/dev/null c 1 3
 sudo umount ramdisk
+test -d ramdisk && rm -rf ramdisk
