@@ -51,6 +51,7 @@ cd ../
 cd ./src/utils/canutils-3.0.2/
 export KERNEL_INCLUDE=../../linux-2.6.33.5/include/
 export CC=/usr/local/arm/4.3.2/bin/arm-linux-gcc
+autoreconf -vif
 ./configure --host=arm-linux-gnueabi --prefix=$(pwd)/output CFLAGS="-I${KERNEL_INCLUDE}"
 make install -j $(($(nproc) * 4))
 cd ../..
