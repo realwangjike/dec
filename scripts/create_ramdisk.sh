@@ -10,3 +10,6 @@ sudo mknod -m 622 ramdisk/dev/console c 5 1
 sudo mknod -m 622 ramdisk/dev/null c 1 3
 sudo umount ramdisk
 test -d ramdisk && rm -rf ramdisk
+test -f output/ramdisk.img && rm -rf output/ramdisk.img
+test -f ramdisk.img && mv ramdisk.img output/
+
