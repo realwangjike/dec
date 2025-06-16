@@ -10,3 +10,4 @@ echo "copy to prebuild"
 test -d prebuild/ || mkdir prebuild/
 find prebuild/ -type f -exec rm -rf {} \;
 find output/ -path "output/fs" -prune -o -type f -exec cp -rf {} prebuild \;
+cp -rf docs/README.prebulid.md prebuild/README.md
