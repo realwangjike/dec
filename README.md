@@ -10,6 +10,7 @@
   - resources: 组件原始源码资源
   - scripts: 工具脚本
   - src: 核心组件源码
+  - prebuild: 编译构建的二进制文件
   - tools/cross-tools: 交叉编译工具
   - autogen.sh: 一键编译构造脚本
 
