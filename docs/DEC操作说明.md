@@ -1,11 +1,11 @@
 # DEC操作说明
 
 ### 程序文件与服务准备
-  - 从代码仓库下载prebuild目录到某一个windows目录    
+  - 从代码仓库下载prebuild目录到某一个windows目录  
     ![](attachments/Clipboard_2025-06-16-17-13-33.png)
-  - 启动tftp服务软件    
+  - 启动tftp服务软件  
     ![](attachments/Clipboard_2025-06-16-17-15-03.png)
-  - 配置目录并保存（Settings-->TFTP）    
+  - 配置目录并保存（Settings-->TFTP）  
     ![](attachments/Clipboard_2025-06-16-17-16-42.png)
   - 就绪  
     ![](attachments/Clipboard_2025-06-16-17-18-40.png)
@@ -14,9 +14,9 @@
 
 ### 程序下载与系统启动
   - PC使用串口线连接到DEC的DEBUG_COM口
-  - PC机中打开超级终端，新建连接，选则对应的com口    
+  - PC机中打开超级终端，新建连接，选则对应的com口  
     ![](attachments/Clipboard_2025-06-16-16-22-38.png)
-  - 端口属性设置为速率115200，数据位8，奇偶校验无，停止位1，数据流控制无;    
+  - 端口属性设置为速率115200，数据位8，奇偶校验无，停止位1，数据流控制无;  
     ![](attachments/Clipboard_2025-06-16-16-23-48.png)
   - 启动跳线J1(具体见附件板子上的红色方框所在位置)至internal，即跳线帽进行对应的跳线;(由于2.0DEC主板丝印印错，裸板调试时跳线需接至external侧);
   - 通过按钮重置(reset)DEC电路板
@@ -70,6 +70,43 @@
     ![](attachments/Clipboard_2025-06-16-17-05-43.png)
   - 系统重启后自动进入linux系统  
     ![](attachments/Clipboard_2025-06-16-17-07-46.png)
+
+------
+
+### CAN卡配置与数据收发    
+
+  - 查看所有链路层节点  
+    ```
+    ip link
+    ip -d link show can0
+    ```  
+    ![](attachments/Clipboard_2025-06-17-09-57-41.png)
+  - can0/can1设置波特率，队列长度，并启动  
+    ``` 
+    ip link set can1 type can bitrate 1000000
+    ip link set can0 type can bitrate 1000000
+    ip link set can1 txqueuelen 1500
+    ip link set can0 txqueuelen 1500
+    ifconfig can1 up
+    ifconfig can0 up
+    ```  
+    ![](attachments/Clipboard_2025-06-17-10-02-21.png)  
+  - 开始监听can0卡    
+    ```candump can0```     
+    ![](attachments/Clipboard_2025-06-17-10-03-26.png)
+  - CAN分析仪器配置对应参数  
+    ![](attachments/Clipboard_2025-06-17-10-05-02.png)
+  - CAN分析仪启动后发送消息  
+    ![](attachments/Clipboard_2025-06-17-10-06-29.png)
+  - 查看Linux系统中接收到的CAN消息  
+    ![](attachments/Clipboard_2025-06-17-10-07-33.png)  
+  - Linux系统中CAN发送消息  
+    ![](attachments/Clipboard_2025-06-17-10-10-00.png)  
+  - 查看CAN分析仪器接收到的消息  
+    ![](attachments/Clipboard_2025-06-17-10-10-50.png)
+
+
+
 
     
     
