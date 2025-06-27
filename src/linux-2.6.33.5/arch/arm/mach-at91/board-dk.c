@@ -161,10 +161,30 @@ static struct atmel_nand_data __initdata dk_nand_data = {
 };
 
 #define DK_FLASH_BASE	AT91_CHIPSELECT_0
-#define DK_FLASH_SIZE	SZ_2M
+#define DK_FLASH_SIZE	SZ_16M
+
+static struct mtd_partition nor_flash_partitions[] = {
+    {
+        .name   = "bootloader",      // 分区0: boot.bin + u-boot.bin.gz
+        .offset = 0x00000000,    // 起始地址
+        .size   = 0x00040000,    // 大小256KB
+		.mask_flags = MTD_WRITEABLE, // 可选：设为只读
+    }, {
+        .name   = "kernel",      // 分区1: 内核
+        .offset = 0x00040000,    // 起始地址
+        .size   = 0x00200000,    // 大小2MB
+		.mask_flags = MTD_WRITEABLE, // 可选：设为只读
+    }, {
+        .name   = "rootfs",      // 分区2: 根文件系统（MTD2）
+        .offset = 0x00240000,
+        .size   = 0x00DC0000,    // （JS28F128J3F75A剩余总容量）
+    },
+};
 
 static struct physmap_flash_data dk_flash_data = {
 	.width		= 2,
+	.nr_parts	= ARRAY_SIZE(nor_flash_partitions),
+	.parts		= nor_flash_partitions,
 };
 
 static struct resource dk_flash_resource = {
@@ -300,8 +320,8 @@ void __init at91_add_device_cans(struct sja1000_platform_data *data)
 		return;
 
 	/* enable the address range of CS3/CS4*/
-	// SJA1000_1��SJA1000_2��Ӧ��CS3��CS4
-	// SJA1000_3��SJA1000_4��Ӧ��CS�ǲ��ɱ�̵ģ�Ĭ�ϵģ���������
+	// SJA1000_1和SJA1000_2对应与CS3和CS4
+	// SJA1000_3和SJA1000_4对应的CS是不可编程的，默认的，无需设置
 	csa = at91_sys_read(AT91_EBI_CSA);
 	csa &= ~AT91_EBI_CS3A;
 	csa |= AT91_EBI_CS3A_SMC;
@@ -327,7 +347,7 @@ void __init at91_add_device_cans(struct sja1000_platform_data *data)
 	at91_sys_write(AT91_SMC_CSR(7), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
 		| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
 
-	//�ж���
+	//中断线
 	at91_set_B_periph(AT91_PIN_PA2, 0);
 	at91_set_B_periph(AT91_PIN_PA3, 0);
 	at91_set_B_periph(AT91_PIN_PA23, 0);
