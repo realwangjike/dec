@@ -16,6 +16,6 @@ export PATH
 USER="$(id -un)"
 LOGNAME=${USER}
 #PS1='[\u@\h \W]\$'
-PS1=">"
+#PS1=">"
 
 echo "welcome."
