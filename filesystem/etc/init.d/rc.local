@@ -1,8 +1,12 @@
 #!/bin/sh
 
 echo "-------------- local service --------------"
+
 /sbin/ifconfig lo 127.0.0.1
-/sbin/ifconfig eth0 192.168.1.32 netmask 255.255.255.0
+
+/bin/ip link set eth0 address 36:1B:C9:0E:05:1D
+/sbin/ifconfig eth0 192.168.90.65 netmask 255.255.255.0
+/bin/ip route add default via 192.168.90.1 dev eth0
 
 echo "telnetd start..."
 /usr/sbin/telnetd
