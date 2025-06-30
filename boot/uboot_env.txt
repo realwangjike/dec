@@ -1,0 +1,10 @@
+baudrate=115200
+bootdelay=5
+stdin=serial
+stdout=serial
+stderr=serial
+ethaddr=36:1B:C9:0E:05:1D
+ipaddr=192.168.90.65
+serverip=192.168.90.60
+bootcmd=cp.b 10040000 20000000 200000; bootm 20000000
+bootargs=mem=32M console=ttyS0,115200 root=/dev/mtdblock2 rootfstype=jffs2 rw init=/sbin/init
