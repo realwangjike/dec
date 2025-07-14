@@ -80,7 +80,7 @@ static struct at91_eth_data __initdata dk_eth_data = {
 };
 
 static struct at91_eth_data __initdata dk_cs89x0_data = {
-	.phy_irq_pin	= AT91_PIN_PC4,
+	.phy_irq_pin	= AT91_PIN_PB29,
 	.is_rmii	= 1,
 };
 
@@ -247,13 +247,13 @@ static struct platform_device at91rm9200_eth_cs89x0 = {
 
 void __init at91_add_device_cs89x0(struct at91_eth_data *data)
 {
-	// if (!data)
-	// 	return;
+	if (!data)
+		return;
 
-	// if (data->phy_irq_pin) {
-	// 	at91_set_gpio_input(data->phy_irq_pin, 0);
-	// 	at91_set_deglitch(data->phy_irq_pin, 1);
-	// }
+	if (data->phy_irq_pin) {
+		at91_set_gpio_input(data->phy_irq_pin, 0);
+		at91_set_deglitch(data->phy_irq_pin, 1);
+	}
 
 	// /* Pins used for MII and RMII */
 	// at91_set_A_periph(AT91_PIN_PA16, 0);	/* EMDIO */
@@ -279,13 +279,7 @@ void __init at91_add_device_cs89x0(struct at91_eth_data *data)
 	// }
 
 
-	// at91_sys_write(AT91_SMC_CSR(7), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
-	// 	| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
-
-
 	at91_sys_write(AT91_SMC_CSR(5), (0xF| (0x1 <<  7) |(0xF<<8)|(0x1 << 12)|(0x1 << 13)|(0x0<<15)|(0x3<<16)|(0x7<<24)|(0x7<<28)));
-	//中断线
-	at91_set_B_periph(AT91_PIN_PB29, 0);
 
 	cs89x0_data = *data;
 	platform_device_register(&at91rm9200_eth_cs89x0);
