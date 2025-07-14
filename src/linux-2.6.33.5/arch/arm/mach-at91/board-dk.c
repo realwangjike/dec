@@ -79,6 +79,11 @@ static struct at91_eth_data __initdata dk_eth_data = {
 	.is_rmii	= 1,
 };
 
+static struct at91_eth_data __initdata dk_cs89x0_data = {
+	.phy_irq_pin	= AT91_PIN_PC4,
+	.is_rmii	= 1,
+};
+
 static struct at91_usbh_data __initdata dk_usbh_data = {
 	.ports		= 2,
 };
@@ -211,6 +216,80 @@ static struct gpio_led dk_leds[] = {
 		.default_trigger	= "heartbeat",
 	}
 };
+
+static u64 cs89x0_dmamask = DMA_BIT_MASK(32);
+static struct at91_eth_data cs89x0_data;
+
+static struct resource cs89x0_resources[] = {
+	[0] = {
+		.start	= 0x60000300,
+		.end	= 0x60000300 + SZ_4K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= AT91RM9200_ID_IRQ0,
+		.end	= AT91RM9200_ID_IRQ0,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct platform_device at91rm9200_eth_cs89x0 = {
+	.name		= "cs89x0",
+	.id		= -1,
+	.dev		= {
+				.dma_mask		= &cs89x0_dmamask,
+				.coherent_dma_mask	= DMA_BIT_MASK(32),
+				.platform_data		= &cs89x0_data,
+	},
+	.resource	= cs89x0_resources,
+	.num_resources	= ARRAY_SIZE(cs89x0_resources),
+};
+
+void __init at91_add_device_cs89x0(struct at91_eth_data *data)
+{
+	// if (!data)
+	// 	return;
+
+	// if (data->phy_irq_pin) {
+	// 	at91_set_gpio_input(data->phy_irq_pin, 0);
+	// 	at91_set_deglitch(data->phy_irq_pin, 1);
+	// }
+
+	// /* Pins used for MII and RMII */
+	// at91_set_A_periph(AT91_PIN_PA16, 0);	/* EMDIO */
+	// at91_set_A_periph(AT91_PIN_PA15, 0);	/* EMDC */
+	// at91_set_A_periph(AT91_PIN_PA14, 0);	/* ERXER */
+	// at91_set_A_periph(AT91_PIN_PA13, 0);	/* ERX1 */
+	// at91_set_A_periph(AT91_PIN_PA12, 0);	/* ERX0 */
+	// at91_set_A_periph(AT91_PIN_PA11, 0);	/* ECRS_ECRSDV */
+	// at91_set_A_periph(AT91_PIN_PA10, 0);	/* ETX1 */
+	// at91_set_A_periph(AT91_PIN_PA9, 0);	/* ETX0 */
+	// at91_set_A_periph(AT91_PIN_PA8, 0);	/* ETXEN */
+	// at91_set_A_periph(AT91_PIN_PA7, 0);	/* ETXCK_EREFCK */
+
+	// if (!data->is_rmii) {
+	// 	at91_set_B_periph(AT91_PIN_PB19, 0);	/* ERXCK */
+	// 	at91_set_B_periph(AT91_PIN_PB18, 0);	/* ECOL */
+	// 	at91_set_B_periph(AT91_PIN_PB17, 0);	/* ERXDV */
+	// 	at91_set_B_periph(AT91_PIN_PB16, 0);	/* ERX3 */
+	// 	at91_set_B_periph(AT91_PIN_PB15, 0);	/* ERX2 */
+	// 	at91_set_B_periph(AT91_PIN_PB14, 0);	/* ETXER */
+	// 	at91_set_B_periph(AT91_PIN_PB13, 0);	/* ETX3 */
+	// 	at91_set_B_periph(AT91_PIN_PB12, 0);	/* ETX2 */
+	// }
+
+
+	// at91_sys_write(AT91_SMC_CSR(7), (AT91_SMC_NWS_(0x2) | AT91_SMC_WSEN 
+	// 	| AT91_SMC_TDF_(0x2) | AT91_SMC_DBW_8 | (0x0 << 15)));
+
+
+	at91_sys_write(AT91_SMC_CSR(5), (0xF| (0x1 <<  7) |(0xF<<8)|(0x1 << 12)|(0x1 << 13)|(0x0<<15)|(0x3<<16)|(0x7<<24)|(0x7<<28)));
+	//中断线
+	at91_set_B_periph(AT91_PIN_PB29, 0);
+
+	cs89x0_data = *data;
+	platform_device_register(&at91rm9200_eth_cs89x0);
+}
 
 #define DK_CAN_ADDRESS_SPACE_SIZE	128
 
@@ -365,6 +444,8 @@ static void __init dk_board_init(void)
 	at91_add_device_serial();
 	/* Ethernet */
 	at91_add_device_eth(&dk_eth_data);
+	/* cs89x0 */
+	at91_add_device_cs89x0(&dk_cs89x0_data);
 	/* USB Host */
 	at91_add_device_usbh(&dk_usbh_data);
 	/* USB Device */
