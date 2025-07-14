@@ -112,6 +112,8 @@
 #define ALLOW_DMA 1
 #endif
 
+#define DEFAULT_MAC_STR "\x02\xAB\xCD\xEF\x12\x34"
+
 /*
  * Set this to zero to remove all the debug statements via
  * dead code elimination
@@ -279,7 +281,7 @@ __setup("cs89x0_dma=", dma_fn);
 #endif /* !defined(MODULE) && (ALLOW_DMA != 0) */
 
 #ifndef MODULE
-static int g_cs89x0_media__force;
+static int g_cs89x0_media__force = FORCE_RJ45;
 
 static int __init media_fn(char *str)
 {
@@ -681,8 +683,11 @@ cs89x0_probe1(struct net_device *dev, unsigned long ioaddr, int modular)
 
 	/* First check to see if an EEPROM is attached. */
 
-	if ((readreg(dev, PP_SelfST) & EEPROM_PRESENT) == 0)
+	if ((readreg(dev, PP_SelfST) & EEPROM_PRESENT) == 0) {
 		printk(KERN_WARNING "cs89x0: No EEPROM, relying on command line....\n");
+		printk(KERN_WARNING "cs89x0: using default mac addr:%s\n", DEFAULT_MAC_STR);
+		memcpy(dev->dev_addr, DEFAULT_MAC_STR, ETH_ALEN);
+	}
 	else if (get_eeprom_data(dev, START_EEPROM_DATA, CHKSUM_LEN, eeprom_buff) < 0)
 	{
 		printk(KERN_WARNING "\ncs89x0: EEPROM read failed, relying on command line.\n");
@@ -1350,7 +1355,7 @@ net_open(struct net_device *dev)
 		writereg(dev, PP_BusCTL, ENABLE_IRQ | MEMORY_ON);
 #endif
 		write_irq(dev, lp->chip_type, dev->irq);
-		ret = request_irq(dev->irq, net_interrupt, 0, dev->name, dev);
+		ret = request_irq(dev->irq, net_interrupt, IRQF_TRIGGER_HIGH, dev->name, dev);
 		if (ret)
 		{
 			printk(KERN_ERR "cs89x0: request_irq(%d) failed\n", dev->irq);
