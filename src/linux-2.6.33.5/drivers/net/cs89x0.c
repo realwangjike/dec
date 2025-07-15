@@ -206,8 +206,6 @@ static unsigned int net_debug = DEBUGGING;
 #define FORCE_HALF	0x0020
 #define FORCE_FULL	0x0030
 
-#define DEFAULT_MAC_STR "\x02\xAB\xCD\xEF\x12\x34"
-
 /* Information that need to be kept for each board. */
 struct net_local {
 	int chip_type;		/* one of: CS8900, CS8920, CS8920M */
@@ -664,8 +662,6 @@ cs89x0_probe1(struct net_device *dev, unsigned long ioaddr, int modular)
 
 	if ((readreg(dev, PP_SelfST) & EEPROM_PRESENT) == 0) {
 		printk(KERN_WARNING "cs89x0: No EEPROM, relying on command line....\n");
-		printk(KERN_WARNING "cs89x0: using default mac addr:%s\n", DEFAULT_MAC_STR);
-		memcpy(dev->dev_addr, DEFAULT_MAC_STR, ETH_ALEN);
 	}
 
 	else if (get_eeprom_data(dev, START_EEPROM_DATA,CHKSUM_LEN,eeprom_buff) < 0) {
